@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_testfx3" default="compile.module.testfx3">
+  <dirname property="module.testfx3.basedir" file="${ant.file.module_testfx3}"/>
+  
+  <property name="module.jdk.home.testfx3" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.testfx3" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.testfx3" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.testfx3" value="-encoding UTF-8 -source 10 -target 10 ${compiler.args}"/>
+  
+  <property name="testfx3.output.dir" value="${module.testfx3.basedir}/out/production/TestFX3"/>
+  <property name="testfx3.testoutput.dir" value="${module.testfx3.basedir}/out/test/TestFX3"/>
+  
+  <path id="testfx3.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="testfx3.module.production.classpath">
+    <path refid="${module.jdk.classpath.testfx3}"/>
+  </path>
+  
+  <path id="testfx3.runtime.production.module.classpath">
+    <pathelement location="${testfx3.output.dir}"/>
+  </path>
+  
+  <path id="testfx3.module.classpath">
+    <path refid="${module.jdk.classpath.testfx3}"/>
+    <pathelement location="${testfx3.output.dir}"/>
+  </path>
+  
+  <path id="testfx3.runtime.module.classpath">
+    <pathelement location="${testfx3.testoutput.dir}"/>
+    <pathelement location="${testfx3.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.testfx3">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.testfx3">
+    <patternset refid="excluded.from.module.testfx3"/>
+  </patternset>
+  
+  <path id="testfx3.module.sourcepath">
+    <dirset dir="${module.testfx3.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.testfx3" depends="compile.module.testfx3.production,compile.module.testfx3.tests" description="Compile module TestFX3"/>
+  
+  <target name="compile.module.testfx3.production" depends="register.custom.compilers" description="Compile module TestFX3; production classes">
+    <mkdir dir="${testfx3.output.dir}"/>
+    <javac2 destdir="${testfx3.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.testfx3}/javac">
+      <compilerarg line="${compiler.args.testfx3}"/>
+      <bootclasspath refid="testfx3.module.bootclasspath"/>
+      <classpath refid="testfx3.module.production.classpath"/>
+      <src refid="testfx3.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.testfx3"/>
+    </javac2>
+    
+    <copy todir="${testfx3.output.dir}">
+      <fileset dir="${module.testfx3.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.testfx3.tests" depends="register.custom.compilers,compile.module.testfx3.production" description="compile module TestFX3; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.testfx3" description="cleanup module">
+    <delete dir="${testfx3.output.dir}"/>
+    <delete dir="${testfx3.testoutput.dir}"/>
+  </target>
+</project>
